@@ -1,0 +1,8 @@
+Defaulting to user installation because normal site-packages is not writeable
+Collecting bitsandbytes
+  Downloading bitsandbytes-0.46.1-py3-none-manylinux_2_24_aarch64.whl (30.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 30.7/30.7 MB 109.3 MB/s eta 0:00:00
+Requirement already satisfied: torch<3,>=2.2 in /usr/lib/python3/dist-packages (from bitsandbytes) (2.7.0)
+Requirement already satisfied: numpy>=1.17 in /home/ubuntu/.local/lib/python3.10/site-packages (from bitsandbytes) (1.26.4)
+Installing collected packages: bitsandbytes
+Successfully installed bitsandbytes-0.46.1
