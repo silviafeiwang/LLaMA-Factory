@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import json
 from typing import TYPE_CHECKING, Literal, Optional, Union
 
 import numpy as np
@@ -158,6 +159,49 @@ def _load_single_dataset(
     if data_args.max_samples is not None:  # truncate dataset
         max_samples = min(data_args.max_samples, len(dataset))
         dataset = dataset.select(range(max_samples))
+
+        # Save selected samples to pickle file with sample IDs
+        samples = []
+        keys = list(dataset[0].keys())
+        for i, sample in enumerate(dataset):
+            # Handle both string and list values, extract "value" fields from nested structures
+            data_parts = []
+            for k in keys:
+                field_value = sample[k]
+                if isinstance(field_value, dict) and "value" in field_value:
+                    # Extract "value" field from nested dict (e.g., chosen/rejected)
+                    data_parts.append(str(field_value["value"]))
+                elif isinstance(field_value, list):
+                    # Handle list of objects, extract "value" from each if present
+                    for item in field_value:
+                        if isinstance(item, dict) and "value" in item:
+                            data_parts.append(str(item["value"]))
+                        else:
+                            data_parts.append(str(item))
+                else:
+                    data_parts.append(str(field_value))
+
+            sample_data = {
+                "id": i,
+                "data": "\n".join(data_parts) + "\n",
+            }
+            samples.append(sample_data)
+
+        # Create pickle filename based on dataset name
+        dataset_name = getattr(dataset_attr, "dataset_name", "dataset")
+        pickle_filename = f"{dataset_name.split('/')[-1]}_{max_samples}.json"
+        text_filename = f"{dataset_name.split('/')[-1]}_{max_samples}_texts.txt"
+        pickle_path = os.path.join(data_args.dataset_dir, pickle_filename)
+        text_path = os.path.join(data_args.dataset_dir, text_filename)
+
+        with open(text_path, "w") as f:
+            for sample in samples:
+                f.write(sample["data"] + "\n")
+
+        with open(pickle_path, "w") as f:
+            json.dump(samples, f, indent=4)
+
+        logger.info_rank0(f"Saved {len(samples)} selected samples to {pickle_path}")
 
     return align_dataset(dataset, dataset_attr, data_args, training_args)
 
