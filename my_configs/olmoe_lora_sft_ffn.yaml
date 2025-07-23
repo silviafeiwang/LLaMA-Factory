@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: mistralai/Mixtral-8x7B-Instruct-v0.1
+model_name_or_path: allenai/OLMoE-1B-7B-0924-Instruct
 quantization_bit: 4  # choices: [8 (bnb/hqq/eetq), 4 (bnb/hqq), 3 (hqq), 2 (hqq)]
 quantization_method: bnb  # choices: [bnb, hqq, eetq]
 trust_remote_code: true
@@ -11,19 +11,19 @@ finetuning_type: lora
 lora_rank: 8
 lora_alpha: 16
 lora_dropout: 0.1
-lora_target: q_proj, k_proj, v_proj, o_proj
+lora_target: gate_proj, up_proj, down_proj
 
 ### dataset
 dataset: codealpaca
-template: mistral
+template: olmo
 cutoff_len: 2048
-max_samples: 1000
+max_samples: 1600
 overwrite_cache: true
 preprocessing_num_workers: 16
 dataloader_num_workers: 4
 
 ### output
-output_dir: output/mixtral-8x7b-instruct-v0.1_codealpaca_lora_sft_1k_5e_attn
+output_dir: output/olmoe_lora_sft_ffn_1600_16b_5e
 logging_steps: 10
 save_steps: 100
 plot_loss: true
