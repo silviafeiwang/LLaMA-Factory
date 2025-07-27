@@ -17,13 +17,13 @@ lora_target: q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj
 dataset: codealpaca
 template: olmo
 cutoff_len: 2048
-max_samples: 1600
+# max_samples: 21000
 overwrite_cache: true
 preprocessing_num_workers: 16
 dataloader_num_workers: 4
 
 ### output
-output_dir: output/olmoe_lora_sft_all_1600_16b_5e
+output_dir: output/olmoe_codealpaca_lora_sft_20k_3e_all
 logging_steps: 10
 save_steps: 100
 plot_loss: true
@@ -35,7 +35,7 @@ report_to: wandb  # choices: [none, wandb, tensorboard, swanlab, mlflow]
 per_device_train_batch_size: 16
 gradient_accumulation_steps: 1
 learning_rate: 5.e-5
-num_train_epochs: 5
+num_train_epochs: 3
 lr_scheduler_type: cosine
 warmup_ratio: 0.1
 bf16: true
@@ -46,4 +46,4 @@ resume_from_checkpoint: null
 val_size: 0.1
 per_device_eval_batch_size: 16
 eval_strategy: steps
-eval_steps: 50
+eval_steps: 500
